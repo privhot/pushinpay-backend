@@ -62,7 +62,11 @@ app.get("/payment-status/:hash", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erro interno no servidor" });
- app.get('/', (req, res) => {
+  }
+});
+
+// Rota para teste
+app.get('/', (req, res) => {
   res.send('API PushinPay funcionando!');
 });
 
