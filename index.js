@@ -15,14 +15,11 @@ app.post('/gerar-pix', async (req, res) => {
     const response = await axios.post(
       'https://api.pushinpay.com.br/api/pix/cashIn',
       {
-        product_name: description,
+        description: description,
         price: value,
-        payment_method: 'pix',
         buyer_name: name,
         buyer_email: email,
         buyer_document: document,
-        pix_key: '',
-        webhook_url: '',
         return_url: 'https://t.me/+edEpDjMIoBlkMTYx'
       },
       {
@@ -36,9 +33,9 @@ app.post('/gerar-pix', async (req, res) => {
     const data = response.data;
 
     res.json({
-      pixCode: data.pix_copy_paste || data.pixCode,
-      qrCodeUrl: data.qr_code_base64 || data.qrCodeUrl,
-      paymentId: data.id || data.paymentId
+      pixCode: data.pix_copy_paste,
+      qrCodeUrl: data.qr_code_base64,
+      paymentId: data.id
     });
 
   } catch (error) {
