@@ -10,6 +10,11 @@ const TOKEN = "33955|6Dxs0qZzCc3GrLnVks065cnIF4CHhZW5wzU9eDed2606dfd9";
 // 💰 Valor da cobrança: R$12,99 (em centavos)
 const VALOR = 1299;
 
+// Rota raiz para teste simples
+app.get('/', (req, res) => {
+  res.send('Backend PushinPay funcionando! 🚀');
+});
+
 app.get('/pix', async (req, res) => {
   try {
     const response = await fetch('https://api.pushinpay.com.br/api/pix/cashIn', {
