@@ -9,40 +9,44 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/gerar-pix', async (req, res) => {
-    try {
-        const { value, name, document, email, description } = req.body;
+  try {
+    const { value, name, document, email, description } = req.body;
 
-        const response = await axios.post('https://api.pushinpay.com/api/v1/payment/create', {
-            product_name: description,
-            price: value,
-            payment_method: 'pix',
-            buyer_name: name,
-            buyer_email: email,
-            buyer_document: document,
-            pix_key: '',
-            webhook_url: '',
-            return_url: 'https://t.me/+edEpDjMIoBlkMTYx'
-        }, {
-            headers: {
-                Authorization: 'Bearer 33812|N8S3myM1ojjFsC88BmEdbtmbWY4CePGSbtBeAuyr7cfd4096',
-                'Content-Type': 'application/json'
-            }
-        });
+    const response = await axios.post(
+      'https://api.pushinpay.com.br/api/pix/cashIn',
+      {
+        product_name: description,
+        price: value,
+        payment_method: 'pix',
+        buyer_name: name,
+        buyer_email: email,
+        buyer_document: document,
+        pix_key: '',
+        webhook_url: '',
+        return_url: 'https://t.me/+edEpDjMIoBlkMTYx'
+      },
+      {
+        headers: {
+          Authorization: 'Bearer 33812|N8S3myM1ojjFsC88BmEdbtmbWY4CePGSbtBeAuyr7cfd4096',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-        const { qr_code, qr_code_base64, pix_copy_paste, id } = response.data;
+    const data = response.data;
 
-        res.json({
-            pixCode: pix_copy_paste,
-            qrCodeUrl: qr_code_base64,
-            paymentId: id
-        });
+    res.json({
+      pixCode: data.pix_copy_paste || data.pixCode,
+      qrCodeUrl: data.qr_code_base64 || data.qrCodeUrl,
+      paymentId: data.id || data.paymentId
+    });
 
-    } catch (error) {
-        console.error('Erro ao gerar pagamento:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Erro ao gerar pagamento.' });
-    }
+  } catch (error) {
+    console.error('Erro ao gerar pagamento:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Erro ao gerar pagamento.' });
+  }
 });
 
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
