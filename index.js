@@ -1,46 +1,48 @@
-import express from 'express';
-import fetch from 'node-fetch';
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const TOKEN = "33955|6Dxs0qZzCc3GrLnVks065cnIF4CHhZW5wzU9eDed2606dfd9";
-const VALOR = 1299;
+app.use(cors());
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Backend PushinPay funcionando! 🚀');
-});
+app.post('/gerar-pix', async (req, res) => {
+    try {
+        const { value, name, document, email, description } = req.body;
 
-app.get('/pix', async (req, res) => {
-  try {
-    const response = await fetch('https://api.pushinpay.com.br/api/pix/cashIn', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${TOKEN}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        value: VALOR,
-        webhook_url: "",
-        redirect_url: "https://t.me/+edEpDjMIoBlkMTYx"
-      }),
-    });
+        const response = await axios.post('https://api.pushinpay.com/api/v1/payment/create', {
+            product_name: description,
+            price: value,
+            payment_method: 'pix',
+            buyer_name: name,
+            buyer_email: email,
+            buyer_document: document,
+            pix_key: '',
+            webhook_url: '',
+            return_url: 'https://t.me/+edEpDjMIoBlkMTYx'
+        }, {
+            headers: {
+                Authorization: 'Bearer 33812|N8S3myM1ojjFsC88BmEdbtmbWY4CePGSbtBeAuyr7cfd4096',
+                'Content-Type': 'application/json'
+            }
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(500).json({ error: 'Erro ao criar cobrança PIX', details: errorText });
+        const { qr_code, qr_code_base64, pix_copy_paste, id } = response.data;
+
+        res.json({
+            pixCode: pix_copy_paste,
+            qrCodeUrl: qr_code_base64,
+            paymentId: id
+        });
+
+    } catch (error) {
+        console.error('Erro ao gerar pagamento:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Erro ao gerar pagamento.' });
     }
-
-    const data = await response.json();
-
-    res.set('Access-Control-Allow-Origin', '*');
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro interno', details: error.message });
-  }
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
