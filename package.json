@@ -1,50 +1,25 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-
-// Rota para gerar cobrança PIX
-app.post('/gerar-pix', async (req, res) => {
-    try {
-        const { value, name, document, email, description } = req.body;
-
-        const response = await axios.post('https://api.pushinpay.com/api/v1/payment/create', {
-            product_name: description,
-            price: value,
-            payment_method: 'pix',
-            buyer_name: name,
-            buyer_email: email,
-            buyer_document: document,
-            pix_key: '',
-            webhook_url: '',
-            return_url: 'https://t.me/+edEpDjMIoBlkMTYx'
-        }, {
-            headers: {
-                Authorization: 'Bearer 33812|N8S3myM1ojjFsC88BmEdbtmbWY4CePGSbtBeAuyr7cfd4096',
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const { qr_code, qr_code_base64, pix_copy_paste, id } = response.data;
-
-        res.json({
-            pixCode: pix_copy_paste,
-            qrCodeUrl: qr_code_base64,
-            paymentId: id
-        });
-
-    } catch (error) {
-        console.error('Erro ao gerar pagamento:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Erro ao gerar pagamento.' });
-    }
-});
-
-// Iniciar servidor
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+{
+  "name": "pushinpay-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/privhot/pushinpay-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/privhot/pushinpay-backend/issues"
+  },
+  "homepage": "https://github.com/privhot/pushinpay-backend#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.1"
+  }
+}
