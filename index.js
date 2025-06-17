@@ -43,15 +43,21 @@ app.post('/gerar-pix', async (req, res) => {
 
     // Tente pegar o código PIX ou o QR code base64 da resposta, ajuste conforme o que sua API retorna
     const code = data.pix_copy_paste || data.pixCode || data.qrCode || data.qr_code;
-    const qrImage = data.qr_code_base64
-      ? `data:image/png;base64,${data.qr_code_base64}`
-      : `https://quickchart.io/qr?text=${encodeURIComponent(code)}`;
 
-    res.json({
-      pixCode: code,
-      qrCodeUrl: qrImage,
-      paymentId: paymentId
-    });
+let qrImage = '';
+if (data.qr_code_base64 && data.qr_code_base64.length > 100) {
+  qrImage = `data:image/png;base64,${data.qr_code_base64}`;
+} else if (code) {
+  qrImage = `https://quickchart.io/qr?text=${encodeURIComponent(code)}`;
+} else {
+  qrImage = null; // Isso ajuda a identificar que deu erro
+}
+
+res.json({
+  pixCode: code,
+  qrCodeUrl: qrImage,
+  paymentId: paymentId
+});
 
   } catch (error) {
     console.error('Erro ao gerar pagamento:', error.response?.data || error.message);
