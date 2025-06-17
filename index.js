@@ -33,12 +33,16 @@ app.post('/gerar-pix', async (req, res) => {
     );
 
     const data = response.data;
+    console.log('Resposta da API PushinPay:', data);
+
+    // Tente pegar o id do pagamento (ajustar conforme sua API)
     const paymentId = data.id || data.paymentId || data.hash;
 
     // Salva o pagamento como pendente
     pagamentos[paymentId] = 'pending';
 
-    const code = data.pix_copy_paste || data.qr_code || data.pixCode;
+    // Tente pegar o código PIX ou o QR code base64 da resposta, ajuste conforme o que sua API retorna
+    const code = data.pix_copy_paste || data.pixCode || data.qrCode || data.qr_code;
     const qrImage = data.qr_code_base64
       ? `data:image/png;base64,${data.qr_code_base64}`
       : `https://quickchart.io/qr?text=${encodeURIComponent(code)}`;
