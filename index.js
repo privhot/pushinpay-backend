@@ -26,7 +26,7 @@ app.post('/gerar-pix', async (req, res) => {
       },
       {
         headers: {
-          Authorization: 'Bearer 33960|rfhrEkNOdUEy0bVGTYhplBnLs5vbhB8TuY9VWvTXc9a1adf7',
+          Authorization: 'Bearer 52168|UeUc4yiBILwOs7KQw9KTBMvikdw7xMUqOR0xeJRWdf3a9ae7',
           'Content-Type': 'application/json'
         }
       }
