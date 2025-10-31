@@ -1,7 +1,6 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-require('dotenv').config(); // Opcional: para token no .env
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,7 +10,7 @@ app.use(express.json());
 
 // IDs das contas na PushInPay (atualizados!)
 const CONTA_PRINCIPAL_ID = '9E6B3CF6-B926-4D73-BCFF-6C2C721E2E59'; // Principal (recebe o resto)
-const CONTA_SECUNDARIA_ID = '9D59972D-C784-4E0A-9B4A-412D23B3C9C0'; // TAXA (sempre R$ 0,20)
+const CONTA_SECUNDARIA_ID = '9D59972D-C784-4E0A-9B4A-412D23B3C9C0'; // Secundária (sempre R$ 0,20)
 
 // Armazenamento temporário dos pagamentos (use Redis/DB em produção)
 const pagamentos = {};
@@ -56,7 +55,7 @@ app.post('/gerar-pix', async (req, res) => {
       },
       {
         headers: {
-          Authorization: 'Bearer 52168|UeUc4yiBILwOs7KQw9KTBMvikdw7xMUqOR0xeJRWdf3a9ae7', // Mova para .env em produção
+          Authorization: 'Bearer 52168|UeUc4yiBILwOs7KQw9KTBMvikdw7xMUqOR0xeJRWdf3a9ae7', // Token hardcoded
           'Content-Type': 'application/json'
         }
       }
